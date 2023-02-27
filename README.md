@@ -21,7 +21,7 @@ Neste laboratório, serão configuradas 4 vms (virtual machines), utilizando o v
     vagrant up
     ```
 
-Caso necessite ajustar algo nas vms, como por exemplo, quantidade de memória RAM ou vCPUs, utilize o arquivo [vagrant/envioronment.yml](vagrant/environment.yml)
+Caso necessite ajustar algo nas vms, como por exemplo, quantidade de memória RAM ou vCPUs, utilize o arquivo [vagrant/environment.yml](vagrant/environment.yml)
 
 ## **2. Configurando o servidor NFS**
 
@@ -33,7 +33,7 @@ Estando dentro do diretório vagrant deste repositório, execute, conecte-se via
 vagrant ssh nfs-server 
 ```
 
-O nome nfs-server foi definido no arquivo [vagrant/envioronment.yml](vagrant/environment.yml).
+O nome nfs-server foi definido no arquivo [vagrant/environment.yml](vagrant/environment.yml).
 
 ### **2.1. Configurando o LVM**
 
