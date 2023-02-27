@@ -2,9 +2,10 @@
 
 Neste laboratório, serão configuradas 4 vms (virtual machines), utilizando o vagrant. As VMs:
 - 1 VM para servidor de NFS
-- 3 VMs para nodes do cluster docker swarm (03 nodes manager)
+- 3 VMs para nodes do cluster docker swarm (1 node manager e 2 node workers)
 - Sistema operacional utilizado: Oracle Linux 8
 
+![Arquitetura básica do cluster swarm](images/arquitetura.png)
 
 ## **1. Subindo as vms com Vagrant**
 
