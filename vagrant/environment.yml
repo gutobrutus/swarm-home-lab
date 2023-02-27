@@ -1,0 +1,28 @@
+---
+- name: nfs-server
+  box: generic/oracle8
+  hostname: nfs
+  ipaddress: 192.168.56.50
+  memory: 512
+  cpus: 1
+
+- name: manager01
+  box: generic/oracle8
+  hostname: node01
+  ipaddress: 192.168.56.51
+  memory: 2048
+  cpus: 1
+
+- name: worker01
+  box: generic/oracle8
+  hostname: node02
+  ipaddress: 192.168.56.52
+  memory: 2048
+  cpus: 1
+
+- name: worker02
+  box: generic/oracle8
+  hostname: node03
+  ipaddress: 192.168.56.53
+  memory: 2048
+  cpus: 1
