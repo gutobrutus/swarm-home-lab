@@ -25,7 +25,7 @@ Caso necessite ajustar algo nas vms, como por exemplo, quantidade de memória RA
 
 ## **2. Configurando o servidor NFS**
 
-**Atenção**: É necessário adicionar um segundo disco nesta VM, que será configurado com LVM.
+**Atenção**: É necessário adicionar um segundo disco nesta VM, que será configurado com LVM. O procedimento para isso vai variar de acordo com o virtualizador utilizado (virtualbox, vmware, hyperv, etc), consulte a documentação do virtualizador que está sendo utilizado.
 
 Estando dentro do diretório vagrant deste repositório, execute, conecte-se via ssh na vm **nfs-server**:
 
@@ -282,6 +282,25 @@ Agora, pode-se criar certificado TLS/SSL autoassinados do tipo wildcard (*.domin
     ```shell
     openssl req -x509 -sha256 -days 3650 -nodes -newkey rsa:2048 -keyout CA.key -out CA.crt
     ```
+
+    a. **openssl**: é o comando que executa a biblioteca OpenSSL, que fornece funções criptográficas e de segurança para várias aplicações e sistemas.
+
+    b. **req**: indica que o comando deve ser usado para trabalhar com certificados e solicitações de certificados.
+
+    c. **-x509**: especifica que um certificado autoassinado deve ser gerado.
+
+    d. **-sha256**: indica que o algoritmo de hash SHA-256 deve ser usado para assinar o certificado.
+
+    e. **-days 3650**: define a validade do certificado em dias. Neste caso, 10 anos.
+
+    f. **-nodes**: informa que a chave privada gerada não deve ser criptografada com uma senha.
+
+    g. **-newkey rsa:2048**: cria uma nova chave privada RSA com um comprimento de 2048 bits.
+
+    h. **-keyout CA.key**: especifica o arquivo onde a chave privada gerada deve ser armazenada.
+
+    i. **-out CA.crt**: especifica o arquivo onde o certificado autoassinado gerado deve ser armazenado.
+
 2. Agora, cria-se a chave privada relacionada à identificação do servidor, identicar o próprio servidor que vai utilizar o certificado:
     ```shell
     openssl genrsa -out server.key 2048
@@ -292,10 +311,36 @@ Agora, pode-se criar certificado TLS/SSL autoassinados do tipo wildcard (*.domin
     ```
     Como estamos gerando um certificado do tipo wildcard, quando for perguntado sobre qual o domínio, coloque **\*.dominio**.
 
+    a. **openssl req**: indica que o comando deve ser usado para trabalhar com certificados e solicitações de certificados.
+    
+    b. **-new**: solicita a criação de uma nova solicitação de certificado.
+    
+    c. **-key server.key**: indica o arquivo que contém a chave privada do servidor para o qual a solicitação de certificado está sendo criada.
+    
+    d. **-out solicitacao.csr**: especifica o nome do arquivo que conterá a solicitação de certificado gerada.
+
 4. Finalmente, procede-se com a criação do certificado TLS/SSL assinado pela CA criada anteriormente:
     ```shell
     openssl x509 -req -in solicitacao.csr -CA CA.crt -CAkey CA.key -CAcreateserial -out certificado.crt -days 3650 -sha256
     ```
+
+    a. **openssl x509**: indica que o comando deve ser usado para trabalhar com certificados digitais.
+    
+    b. **-req**: indica que o certificado deve ser gerado a partir de uma CSR (Certificate Signing Request).
+    
+    c. **-in solicitacao.csr**: especifica o arquivo que contém a CSR.
+    
+    d. **-CA CA.crt**: especifica o arquivo que contém o certificado público da CA que será usada para assinar o certificado.
+    
+    e. **-CAkey CA.key**: especifica o arquivo que contém a chave privada da CA que será usada para assinar o certificado.
+    
+    f. **-CAcreateserial**: cria um arquivo serial com o número de série do certificado assinado.
+    
+    g. **-out certificado.crt**: especifica o nome do arquivo que conterá o certificado assinado gerado.
+    
+    h. **-days 3650**: especifica o número de dias durante os quais o certificado será válido (neste caso, 10 anos).
+    
+    i. **-sha256**: especifica o algoritmo de hash que deve ser usado para assinar o certificado (neste caso, SHA256).
 
 ### **3.5. Instalando o Portainer**
 
