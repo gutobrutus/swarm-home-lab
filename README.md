@@ -272,6 +272,31 @@ Agora que os 3 nodes estão prontos, falta configurar a montagem do NFS nos node
     192.168.56.50:/nfs/data /data nfs rw,hard,intr,rsize=8192,wsize=8192,timeo=14 0 0
     ```
 
+## **3.5. Certificado TLS/SSL autoassinado**
+
+Agora, pode-se criar certificado TLS/SSL autoassinados do tipo wildcard (*.dominio) para utilização mais a frente se necessário
+
+### **Passo-a-passo**
+
+1. Primeiro deve-se criar a CA (Autoridade Certificadora) que será utilizada para assinar os certificados que será criados. Para tanto:
+    ```shell
+    openssl req -x509 -sha256 -days 3650 -nodes -newkey rsa:2048 -keyout CA.key -out CA.crt
+    ```
+2. Agora, cria-se a chave privada relacionada à identificação do servidor, identicar o próprio servidor que vai utilizar o certificado:
+    ```shell
+    openssl genrsa -out server.key 2048
+    ```
+3. Próxima etada, dev-se criar uma CSR, que é uma solicitação de assinatura de certificado, ou seja, pedindo para CA assinar o certificado que será gerado.
+    ```shell
+    openssl req -new -key server.key -out solicitacao.csr
+    ```
+    Como estamos gerando um certificado do tipo wildcard, quando for perguntado sobre qual o domínio, coloque **\*.dominio**.
+
+4. Finalmente, procede-se com a criação do certificado TLS/SSL assinado pela CA criada anteriormente:
+    ```shell
+    openssl x509 -req -in solicitacao.csr -CA CA.crt -CAkey CA.key -CAcreateserial -out certificado.crt -days 3650 -sha256
+    ```
+
 ### **3.5. Instalando o Portainer**
 
 O Portainer é uma aplicação que permite administrar containers docker e consequentemente um cluster swarm. Para isso, acesse a vm manager01 e siga os passos abaixo:
