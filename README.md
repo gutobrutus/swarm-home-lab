@@ -246,7 +246,7 @@ O ideal é ter um terminal para cada VM. Será demonstrado a instalação no nod
     mwrx3zcizjgq97me6pzkf32ui     node03     Ready     Active                          23.0.1
     ```
 
-### **3.4. Configurando cliente NFS
+### **3.4. Configurando cliente NFS**
 
 Agora que os 3 nodes estão prontos, falta configurar a montagem do NFS nos nodes, no path /data. Os passos abaixo devem ser executados nas 3 vms do cluster.
 
@@ -276,7 +276,7 @@ Agora que os 3 nodes estão prontos, falta configurar a montagem do NFS nos node
 
 ## **3.5. Certificado TLS/SSL autoassinado**
 
-Agora, pode-se criar certificado TLS/SSL autoassinados do tipo wildcard (*.dominio) para utilização mais a frente se necessário
+Agora, pode-se criar certificado TLS/SSL autoassinados do tipo wildcard (*.dominio) para utilização mais a frente se necessário, caso vá implantar em ambiente interno e queira utilizar TLS/SSL no proxy Traefik.
 
 ### **Passo-a-passo**
 
