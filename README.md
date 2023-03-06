@@ -379,7 +379,7 @@ Implantando o Traefik. Para isso, efetue login na vm manager01, como root:
 
 1. Criando a rede docker para o Traefik:
     ```shell
-    docker network create --driver=overlay traefik-public
+    docker network create --driver=overlay traefik_public
     ```
 
 2. Salve em uma variável de ambiente o ID do node manager:
