@@ -215,6 +215,8 @@ O ideal é ter um terminal para cada VM. Será demonstrado a instalação no nod
     firewall-cmd --add-port=4789/udp --permanent
     firewall-cmd --reload
     ```
+    Acima, para restringir melhor, pode-se criar um um **ipset** com o fireall-cmd para liberar apenas para um determinado conjunto de ips ou subrede. Mais informações, consulte a documentação do firewall-cmd.
+
 2. Na vm manager01, que será o node manager, execute:
 
     ```shell
@@ -255,7 +257,7 @@ Agora que os 3 nodes estão prontos, falta configurar a montagem do NFS nos node
 
 2. Instalando pacotes necessários e úteis que podem ser necessários posteriormente:
     ```shell
-    yum install epel-release -y && yum update -y && yum install wget git vim htop curl net-tools nfs-utils traceroute tcpdump rsyslog -y
+    yum install epel-release -y && yum update -y && yum install wget git vim htop curl net-tools nfs-utils traceroute tcpdump rsyslog openssl-y
     ```
 
 3. Montando o NFS no diretório:
@@ -344,7 +346,7 @@ Agora, pode-se criar certificado TLS/SSL autoassinados do tipo wildcard (*.domin
 
 ### **3.5. Instalando o Portainer**
 
-O Portainer é uma aplicação que permite administrar containers docker e consequentemente um cluster swarm. Para isso, acesse a vm manager01 e siga os passos abaixo:
+O Portainer é uma aplicação que permite administrar containers docker e consequentemente um cluster swarm. Para isso, acesse a vm **manager01** e siga os passos abaixo:
 
 1. Crie o diretório que vai armazenar o volume do Portainer:
     ```shell
