@@ -274,9 +274,9 @@ Agora que os 3 nodes estão prontos, falta configurar a montagem do NFS nos node
     192.168.56.50:/nfs/data /data nfs rw,hard,intr,rsize=8192,wsize=8192,timeo=14 0 0
     ```
 
-## **3.5. Certificado TLS/SSL autoassinado**
+## **3.5. Certificado TLS/SSL autoassinado (opcional)**
 
-Agora, pode-se criar certificado TLS/SSL autoassinados do tipo wildcard (*.dominio) para utilização mais a frente se necessário, caso vá implantar em ambiente interno e queira utilizar TLS/SSL no proxy Traefik.
+Agora, pode-se criar certificado TLS/SSL autoassinados do tipo wildcard (*.dominio) para utilização mais a frente, se necessário, caso vá implantar em ambiente interno e queira utilizar TLS/SSL no proxy Traefik.
 
 ### **Passo-a-passo**
 
@@ -344,32 +344,7 @@ Agora, pode-se criar certificado TLS/SSL autoassinados do tipo wildcard (*.domin
     
     i. **-sha256**: especifica o algoritmo de hash que deve ser usado para assinar o certificado (neste caso, SHA256).
 
-### **3.5. Instalando o Portainer**
-
-O Portainer é uma aplicação que permite administrar containers docker e consequentemente um cluster swarm. Para isso, acesse a vm **manager01** e siga os passos abaixo:
-
-1. Crie o diretório que vai armazenar o volume do Portainer:
-    ```shell
-    mkdir -p /data/portainer_data
-    ```
-
-2. Agora crie um arquivo no diretório home do usuário root, conforme o [portainer.yml](portainer.yml).
-
-3. Faça o deploy da stack do portainer com:
-    ```shell
-    docker stack deploy -c portainer.yml portainer
-    ```
-
-    Após terminar de subir a app, basta acessar no browser http://192.168.56.51:9000/
-
-    Irá aparecer a tela abaixo, configure a senha do usuário admin e clique no botão para criar o usuário
-
-    ![Tela inicial do Portainer](images/portainer01.png)
-
-    Para acessar via https: https://192.168.56.51:9443/
-
-
-### **3.6. Instalando o Traefik**
+### **3.5. Implantando o Traefik**
 
 O Traefik é uma solução de proxy reverso. Será utilizado no cluster swarm para gerenciar o encaminhamento de requisições para as aplicações que forem implantadas.
 
@@ -379,19 +354,17 @@ Implantando o Traefik. Para isso, efetue login na vm manager01, como root:
 
 1. Criando a rede docker para o Traefik:
     ```shell
-    docker network create --driver=overlay traefik_public
+    docker network create --driver=overlay traefik-public
     ```
-
-2. Salve em uma variável de ambiente o ID do node manager:
+2. Crie, se ainda não o tiver feito, o diretório que servirá de volume para Traefik:
     ```shell
-    export NODE_ID=$(docker info -f '{{.Swarm.NodeID}}')
+    mkdir -p /data/traefik-public-certificates
     ```
-
-3. Criação de uma tag no nó manager, para definir que o Traefik seja implantado sempre no mesmo nó:
+3. Crie o arquivo necessário para uso do Traefik no diretório criado acima:
     ```shell
-    docker node update --label-add traefik-public.traefik-public-certificates=true $NODE_ID
+    touch /mnt/data/traefik-public-certificates/acme.json
     ```
-
+    
 4. Crie uma variável de ambiente com o e-mail que será usado para geração de certificados TLS/SSL.
     ```shell
     export EMAIL=admin@example.com
@@ -419,12 +392,7 @@ Implantando o Traefik. Para isso, efetue login na vm manager01, como root:
     ```
     Caso não possua o openssl instalado, basta executar **yum install openssl -y**.
 
-9. Crie o diretório que abrigará o volume do Traefik, conforme definido no arquivo [traefik.yml](traefik.yml).
-    ```shell
-    mkdir -p /data/traefik-public-certificates
-    ```
-
-10. Subindo a stack do Traefik:
+9. Subindo a stack do Traefik a partir do arquivo [treafik.yaml](traefik.yml):
     ```shell
     docker stack deploy -c traefik.yml traefik
     ```
@@ -434,3 +402,33 @@ Implantando o Traefik. Para isso, efetue login na vm manager01, como root:
     ```
 
     Depois de tudo UP, basta acessar https://traefik.SEU_DOMINIO. Será solicitada a senha criada anteriormente.
+
+### **3.6. Implantando o Portainer**
+
+O Portainer é uma aplicação que permite administrar containers docker e consequentemente um cluster swarm. Para isso, acesse a vm **manager01** e siga os passos abaixo:
+
+1. Crie o diretório que vai armazenar o volume do Portainer:
+    ```shell
+    mkdir -p /data/portainer_data
+    ```
+
+2. Agora crie um arquivo no diretório home do usuário root, conforme o [portainer.yml](portainer.yml).
+
+3. Crie uma variável de ambiente para guardar a url de acesso da UI do Portainer.
+    ```shell
+    export DOMAIN_PORTAINER=portainer.sys.example.com
+    ```
+    Deve-se criar uma entrada de DNS apontando o domínio para o IP da VM manager01. Localmente, no Linux, pode-se adicionar essa entrada através do arquivo **/etc/hosts**.
+
+4. Faça o deploy da stack do portainer com:
+    ```shell
+    docker stack deploy -c portainer.yml portainer
+    ```
+
+    Após terminar de subir a app, basta acessar no browser http://DOMINIO:9000/
+
+    Irá aparecer a tela abaixo, configure a senha do usuário admin e clique no botão para criar o usuário
+
+    ![Tela inicial do Portainer](images/portainer01.png)
+
+
